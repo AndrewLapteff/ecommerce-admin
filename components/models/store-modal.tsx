@@ -41,15 +41,21 @@ export const StoreModal = () => {
       console.log(error)
       toast({ title: 'Oops!', description: 'Smth went wrong' })
     }
-    console.log(data)
     setIsLoading(false)
-    if (data?.hasOwnProperty('error'))
+
+    if (data == null) {
+      toast({ title: 'Oops!', description: 'Smth went wrong' })
+      return
+    }
+
+    if ('error' in data) {
       toast({ title: 'Oops!', description: data?.error })
+    } else {
+      window.location.assign(`/${data.id}`)
+    }
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     await createStoreHandler(values.name)
   }
 
@@ -69,14 +75,24 @@ export const StoreModal = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input disabled={isLoading} placeholder="Amazon" {...field} />
+                  <Input
+                    aria-label="Input a name of store"
+                    disabled={isLoading}
+                    placeholder="Amazon"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
                 <div className="flex justify-between pt-3">
-                  <Button disabled={isLoading} type="submit">
+                  <Button
+                    aria-label="Continue"
+                    disabled={isLoading}
+                    type="submit"
+                  >
                     Continue
                   </Button>
                   <Button
+                    aria-label="Cancel"
                     disabled={isLoading}
                     variant="outline"
                     type="button"
