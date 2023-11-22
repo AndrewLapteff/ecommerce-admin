@@ -1,7 +1,6 @@
 'use client'
 
 import { useStoreModal } from '@/hooks/use-store-modal'
-import { useStoreModal2 } from '@/hooks/use-store-modal2'
 import { useEffect } from 'react'
 
 // components which triggers the modal

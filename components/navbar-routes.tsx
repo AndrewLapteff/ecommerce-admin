@@ -11,6 +11,11 @@ const NavbarRoutes = ({ className }: HTMLAttributes<HTMLElement>) => {
 
   const routes = [
     {
+      href: `/${params.storeId}`,
+      label: 'Dashboard',
+      active: pathname === `/${params.storeId}`,
+    },
+    {
       href: `/${params.storeId}/settings`,
       label: 'Settings',
       active: pathname === `/${params.storeId}/settings`,
@@ -19,7 +24,7 @@ const NavbarRoutes = ({ className }: HTMLAttributes<HTMLElement>) => {
 
   return (
     <ul
-      className={cn('flex items-center space-x-4 lg:space-x-6 mx-4', className)}
+      className={cn('flex items-center space-x-4 lg:space-x-6 mx-6', className)}
     >
       {routes.map((link) => {
         return (
