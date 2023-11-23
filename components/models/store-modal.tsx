@@ -74,6 +74,7 @@ export const StoreModal = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Name</FormLabel>
+
                 <FormControl>
                   <Input
                     aria-label="Input a name of store"
@@ -82,13 +83,9 @@ export const StoreModal = () => {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
-                <div className="flex justify-between pt-3">
-                  <Button
-                    aria-label="Continue"
-                    disabled={isLoading}
-                    type="submit"
-                  >
+                <FormMessage className="absolute" />
+                <div className="flex justify-between pt-7">
+                  <Button aria-label="Continue" disabled={isLoading} type="submit">
                     Continue
                   </Button>
                   <Button

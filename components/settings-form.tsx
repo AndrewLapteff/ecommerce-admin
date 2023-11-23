@@ -3,20 +3,14 @@
 import { Store } from '@prisma/client'
 import Heading from '@/components/ui/heading'
 import { Button } from '@/components/ui/button'
-import { Trash2Icon } from 'lucide-react'
+import { Check, Trash2Icon } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { useForm, FormProvider } from 'react-hook-form'
 import * as z from 'zod'
 import { formSchema } from '@/validation/form-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { deleteStore, updateStore } from '@/actions/store.actions'
 import { useToast } from '@/components/ui/use-toast'
@@ -25,6 +19,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import AlertModal from '@/components/models/alert-modal'
 import APIAlert from '@/components/ui/api-alert'
 import { useOrigin } from '@/hooks/use-origin'
+import prismadb from '@/lib/prismadb'
 
 interface SettingsFormProps {
   store: Store
@@ -41,7 +36,6 @@ const SettingsForm = ({ store }: SettingsFormProps) => {
   const pathname = usePathname()
   const router = useRouter()
   const origin = useOrigin()
-
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: store,
@@ -122,10 +116,7 @@ const SettingsForm = ({ store }: SettingsFormProps) => {
       </div>
       <Separator />
       <FormProvider {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-8/12"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-8/12">
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
@@ -136,23 +127,15 @@ const SettingsForm = ({ store }: SettingsFormProps) => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input
-                        disabled={loading}
-                        placeholder="Store name"
-                        {...field}
-                      ></Input>
+                      <Input disabled={loading} placeholder="Store name" {...field}></Input>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="absolute" />
                   </FormItem>
                 )
               }}
             ></FormField>
           </div>
-          <Button
-            aria-label="Save changes"
-            disabled={loading || name === store.name}
-            type="submit"
-          >
+          <Button aria-label="Save changes" disabled={loading || name === store.name} type="submit">
             Save
           </Button>
         </form>

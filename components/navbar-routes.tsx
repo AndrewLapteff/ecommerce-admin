@@ -16,6 +16,11 @@ const NavbarRoutes = ({ className }: HTMLAttributes<HTMLElement>) => {
       active: pathname === `/${params.storeId}`,
     },
     {
+      href: `/${params.storeId}/billboards`,
+      label: 'Billboards',
+      active: pathname.includes('billboards'),
+    },
+    {
       href: `/${params.storeId}/settings`,
       label: 'Settings',
       active: pathname === `/${params.storeId}/settings`,
@@ -23,18 +28,14 @@ const NavbarRoutes = ({ className }: HTMLAttributes<HTMLElement>) => {
   ]
 
   return (
-    <ul
-      className={cn('flex items-center space-x-4 lg:space-x-6 mx-6', className)}
-    >
+    <ul className={cn('flex items-center space-x-4 lg:space-x-6 mx-6', className)}>
       {routes.map((link) => {
         return (
           <li key={link.href}>
             <Link
               className={cn(
                 'text-sm font-medium transition-colors hover:text-primary',
-                link.active
-                  ? 'text-black dark:text-white'
-                  : 'text-muted-foreground'
+                link.active ? 'text-black dark:text-white' : 'text-muted-foreground'
               )}
               href={link.href}
               key={link.href}
