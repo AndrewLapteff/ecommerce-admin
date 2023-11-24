@@ -3,7 +3,8 @@
 import { useDropzone } from 'react-dropzone'
 import { useCallback, useState } from 'react'
 import Image from 'next/image'
-import { getImageProperties } from '@/actions/image.actions'
+import { getImageProperties } from '@/lib/utils'
+import { useDropzoneFile } from '@/hooks/use-dropzone-file'
 
 const MAX_SIZE = 1024 * 1500
 const FIXED_HEIGHT = 120
@@ -16,6 +17,7 @@ interface ImageDataType {
 const Dropzone = () => {
   const [file, setFile] = useState<File>()
   const [imageData, setImageData] = useState<ImageDataType>({ width: 0, height: 0 })
+  const { onUpload } = useDropzoneFile()
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const newFile = acceptedFiles[0]
@@ -27,6 +29,7 @@ const Dropzone = () => {
         setImageData({ width: newWidth, height: FIXED_HEIGHT })
       })
       setFile(acceptedFiles[0])
+      onUpload(acceptedFiles[0])
     }
   }, [])
 
@@ -38,7 +41,11 @@ const Dropzone = () => {
 
   return (
     <div {...getRootProps({ className: 'max-w-xl' })}>
-      <label className="flex justify-center w-full h-[128px] px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+      <label
+        className={`flex justify-center w-full h-[128px] px-4 transition bg-white border-2 ${
+          isDragActive ? 'border-gray-400' : 'border-gray-300'
+        } border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none`}
+      >
         {file && (
           <div className="flex items-center space-x-2">
             <Image

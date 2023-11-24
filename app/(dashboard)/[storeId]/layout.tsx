@@ -9,10 +9,7 @@ interface DashboardLayoutParams {
   params: { storeId: string }
 }
 
-export default async function DashboardLayout({
-  children,
-  params,
-}: DashboardLayoutParams) {
+export default async function DashboardLayout({ children, params }: DashboardLayoutParams) {
   const { userId } = auth()
   if (!userId) redirect('/sign-in')
 
@@ -22,7 +19,6 @@ export default async function DashboardLayout({
       userId,
     },
   })
-
   if (!store) redirect('/sign-in')
 
   return (

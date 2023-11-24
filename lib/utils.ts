@@ -12,3 +12,20 @@ export const lengthFormater = (label: string) => {
     return label
   }
 }
+
+export const getImageProperties = async (file: File, callback: (width: number, height: number) => void) => {
+  const reader = new FileReader()
+
+  reader.onload = function (e) {
+    const img = new Image()
+
+    img.onload = function () {
+      callback(img.width, img.height)
+    }
+    // @ts-ignore
+    img.src = e?.target?.result
+  }
+
+  reader.readAsDataURL(file)
+}
+

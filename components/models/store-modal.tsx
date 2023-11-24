@@ -17,13 +17,13 @@ import { Input } from '@/components/ui/input'
 import { formSchema } from '@/validation/form-schema'
 import { Button } from '@/components/ui/button'
 import { createStore } from '@/actions/store.actions'
-import { useToast } from '@/components/ui/use-toast'
 import { useState } from 'react'
+import { useToastImproved } from '@/hooks/use-toast'
 
 export const StoreModal = () => {
   const [isLoading, setIsLoading] = useState(false)
   const storeModal = useStoreModal()
-  const { toast } = useToast()
+  const toast = useToastImproved()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,18 +38,18 @@ export const StoreModal = () => {
     try {
       data = await createStore({ name })
     } catch (error) {
-      console.log(error)
-      toast({ title: 'Oops!', description: 'Smth went wrong' })
+      console.error(error)
+      toast('Oops!', 'Smth went wrong')
     }
     setIsLoading(false)
 
     if (data == null) {
-      toast({ title: 'Oops!', description: 'Smth went wrong' })
+      toast('Oops!', 'Smth went wrong')
       return
     }
 
     if ('error' in data) {
-      toast({ title: 'Oops!', description: data?.error })
+      toast('Oops!', data?.error)
     } else {
       window.location.assign(`/${data.id}`)
     }

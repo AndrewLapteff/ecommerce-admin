@@ -11,11 +11,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/components/ui/use-toast'
 import AlertModal from '@/components/models/alert-modal'
-import { useOrigin } from '@/hooks/use-origin'
 import { billboardSchema } from '@/validation/billboard-schema'
 import Dropzone from './dropzone'
+import { useDropzoneFile } from '@/hooks/use-dropzone-file'
+import { computeSHA256, generateFineName, getSignedURL } from '@/actions/image.actions'
+import { useToastImproved } from '@/hooks/use-toast'
+import { createBillboard } from '@/actions/billboard.actions'
+import { useParams, useRouter } from 'next/navigation'
 
 interface BillboardFormProps {
   billboardData: Billboard | null
@@ -26,24 +29,61 @@ type BillboardSchemaType = z.infer<typeof billboardSchema>
 const BillboardForm = ({ billboardData }: BillboardFormProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [name, setName] = useState('')
+  const [label, setLabel] = useState('')
+  const { file, isUploaded } = useDropzoneFile()
 
   const title = billboardData ? 'Update billboard' : 'Add billboard'
   const description = billboardData ? 'Update a billboard' : 'Add a new billboard'
   const toastMessage = billboardData ? 'Billboard updated' : 'Billboard created'
   const action = billboardData ? 'Save Changes' : 'Create'
 
-  const { toast } = useToast()
-  const origin = useOrigin()
+  const router = useRouter()
+  const toast = useToastImproved()
+  const params = useParams()
   const form = useForm<BillboardSchemaType>({
     resolver: zodResolver(billboardSchema),
     defaultValues: billboardData || {
       label: '',
-      imageUrl: '',
     },
   })
 
-  const onSubmit = async (data: BillboardSchemaType) => {}
+  const onSubmit = async (data: BillboardSchemaType) => {
+    if (file !== null && isUploaded) {
+      try {
+        setLoading(true)
+        const { url, error } = await getSignedURL(file.type, file.size)
+
+        if (!url) return
+        if (error) {
+          toast('Oops', error)
+          return
+        }
+
+        const responseFromAWS = await fetch(url, {
+          body: file,
+          headers: { 'Content-Type': file.type },
+          method: 'PUT',
+        })
+
+        if (!responseFromAWS.ok) throw new Error('Smth went wrong')
+
+        const responseFromDB = await createBillboard(url.split('?')[0], data.label, params.storeId)
+
+        if (responseFromDB?.error) {
+          toast('Oops', responseFromDB?.error)
+          return
+        }
+
+        toast('Success!', `Billboard "${responseFromDB.billboard?.label}" has been created`)
+        router.push(`/${params.storeId}/billboards`)
+      } catch (error) {
+        console.error(error)
+        toast('Oops!', "The image can't be uploaded right now")
+      } finally {
+        setLoading(false)
+      }
+    }
+  }
 
   const onDelete = () => {}
 
@@ -80,7 +120,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
               control={form.control}
               name="label"
               render={({ field }) => {
-                if (name !== field.value) setName(field.value)
+                setLabel(field.value)
                 return (
                   <FormItem>
                     <FormLabel>Label</FormLabel>
@@ -94,7 +134,11 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
             ></FormField>
           </div>
           <Dropzone />
-          <Button aria-label="Save changes" disabled={loading} type="submit">
+          <Button
+            aria-label="Save changes"
+            disabled={loading || !isUploaded || label.length < 3}
+            type="submit"
+          >
             {action}
           </Button>
         </form>

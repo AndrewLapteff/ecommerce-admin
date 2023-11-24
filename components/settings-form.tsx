@@ -20,6 +20,7 @@ import AlertModal from '@/components/models/alert-modal'
 import APIAlert from '@/components/ui/api-alert'
 import { useOrigin } from '@/hooks/use-origin'
 import prismadb from '@/lib/prismadb'
+import { useToastImproved } from '@/hooks/use-toast'
 
 interface SettingsFormProps {
   store: Store
@@ -32,7 +33,7 @@ const SettingsForm = ({ store }: SettingsFormProps) => {
   const [loading, setLoading] = useState(false)
   const [name, setName] = useState('')
 
-  const { toast } = useToast()
+  const toast = useToastImproved()
   const pathname = usePathname()
   const router = useRouter()
   const origin = useOrigin()
@@ -51,22 +52,12 @@ const SettingsForm = ({ store }: SettingsFormProps) => {
         pathname,
       })
       if ('error' in response) {
-        toast({
-          title: 'Oops!',
-          description: response.error,
-        })
+        toast('Oops!', response.error)
       } else {
-        toast({
-          title: 'Success!',
-          description: 'The name was successfully updated',
-        })
+        toast('Success!', 'The name was successfully updated')
       }
-      console.log(response)
     } catch (error) {
-      toast({
-        title: 'Oops!',
-        description: 'Smth went wrong',
-      })
+      toast('Oops!', 'Smth went wrong')
     } finally {
       setLoading(false)
     }
@@ -77,15 +68,9 @@ const SettingsForm = ({ store }: SettingsFormProps) => {
       setLoading(true)
       deleteStore({ storeId: store.id, pathname })
       router.push('/')
-      toast({
-        title: 'Success!',
-        description: 'Store has been deleted',
-      })
+      toast('Success!', 'Store has been deleted')
     } catch (error) {
-      toast({
-        title: 'Alert!',
-        description: 'Make sure you deleted all products and categories first',
-      })
+      toast('Alert!', 'Make sure you deleted all products and categories first')
     } finally {
       setLoading(false)
       setIsOpen(false)
