@@ -15,10 +15,10 @@ import AlertModal from '@/components/models/alert-modal'
 import { billboardSchema } from '@/validation/billboard-schema'
 import Dropzone from './dropzone'
 import { useDropzoneFile } from '@/hooks/use-dropzone-file'
-import { computeSHA256, generateFineName, getSignedURL } from '@/actions/image.actions'
+import { getSignedURL } from '@/actions/image.actions'
 import { useToastImproved } from '@/hooks/use-toast'
-import { createBillboard } from '@/actions/billboard.actions'
-import { useParams, useRouter } from 'next/navigation'
+import { createBillboard, deleteBillboard, updateBillboard } from '@/actions/billboard.actions'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 
 interface BillboardFormProps {
   billboardData: Billboard | null
@@ -34,9 +34,16 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
 
   const title = billboardData ? 'Update billboard' : 'Add billboard'
   const description = billboardData ? 'Update a billboard' : 'Add a new billboard'
-  const toastMessage = billboardData ? 'Billboard updated' : 'Billboard created'
+  const toastMessage = billboardData
+    ? `Billboard "${label || billboardData.label}" has been updated`
+    : `Billboard "${label}" has been created`
   const action = billboardData ? 'Save Changes' : 'Create'
+  const creatingOrUpdatingBillboardValidation = billboardData
+    ? !(label !== billboardData.label || isUploaded)
+    : !isUploaded || label.length < 3
+  const creatingOrUpdatingChecker = billboardData ? true : file !== null && isUploaded
 
+  const pathname = usePathname()
   const router = useRouter()
   const toast = useToastImproved()
   const params = useParams()
@@ -47,35 +54,89 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
     },
   })
 
+  const updateBillboardHandler = async (
+    file: File | null,
+    label: string,
+    billboardData: Billboard
+  ) => {
+    setLoading(true)
+    let sign = null
+    if (file && isUploaded) {
+      sign = await getSignedURL(file.type, file.size)
+
+      if (!sign.url) return
+      if (sign.error) {
+        toast('Oops', sign.error)
+        return
+      }
+
+      const responseFromAWS = await fetch(sign.url, {
+        body: file,
+        headers: { 'Content-Type': file.type },
+        method: 'PUT',
+      })
+
+      if (!responseFromAWS.ok) throw new Error('Smth went wrong')
+    }
+
+    const responseFromDB = await updateBillboard({
+      billboardId: billboardData.id,
+      label: !label ? null : label,
+      storeId: params.storeId,
+      url: sign !== null && sign.url ? sign.url.split('?')[0] : null,
+      pathname,
+    })
+
+    if (responseFromDB?.error) {
+      toast('Oops', responseFromDB?.error)
+      return
+    }
+
+    toast('Success!', toastMessage)
+    router.push(`/${params.storeId}/billboards`)
+  }
+
+  const createBillboardHandler = async (file: File | null, label: string) => {
+    setLoading(true)
+    if (!file) {
+      toast('Oops!', "It seems like you didn't upload a file")
+      return
+    }
+    const { url, error } = await getSignedURL(file.type, file.size)
+
+    if (!url) return
+    if (error) {
+      toast('Oops', error)
+      return
+    }
+
+    const responseFromAWS = await fetch(url, {
+      body: file,
+      headers: { 'Content-Type': file.type },
+      method: 'PUT',
+    })
+
+    if (!responseFromAWS.ok) throw new Error('Smth went wrong')
+
+    const responseFromDB = await createBillboard(url.split('?')[0], label, params.storeId, pathname)
+
+    if (responseFromDB?.error) {
+      toast('Oops', responseFromDB?.error)
+      return
+    }
+
+    router.push(`/${params.storeId}/billboards`)
+    toast('Success!', toastMessage)
+  }
+
   const onSubmit = async (data: BillboardSchemaType) => {
-    if (file !== null && isUploaded) {
+    if (creatingOrUpdatingChecker) {
       try {
-        setLoading(true)
-        const { url, error } = await getSignedURL(file.type, file.size)
-
-        if (!url) return
-        if (error) {
-          toast('Oops', error)
-          return
+        if (billboardData) {
+          await updateBillboardHandler(file, data.label, billboardData)
+        } else {
+          await createBillboardHandler(file, data.label)
         }
-
-        const responseFromAWS = await fetch(url, {
-          body: file,
-          headers: { 'Content-Type': file.type },
-          method: 'PUT',
-        })
-
-        if (!responseFromAWS.ok) throw new Error('Smth went wrong')
-
-        const responseFromDB = await createBillboard(url.split('?')[0], data.label, params.storeId)
-
-        if (responseFromDB?.error) {
-          toast('Oops', responseFromDB?.error)
-          return
-        }
-
-        toast('Success!', `Billboard "${responseFromDB.billboard?.label}" has been created`)
-        router.push(`/${params.storeId}/billboards`)
       } catch (error) {
         console.error(error)
         toast('Oops!', "The image can't be uploaded right now")
@@ -85,7 +146,20 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
     }
   }
 
-  const onDelete = () => {}
+  const onDelete = async () => {
+    if (billboardData?.id) {
+      try {
+        await deleteBillboard(billboardData.id, params.storeId, pathname)
+        router.push(`/${params.storeId}/billboards`)
+        toast('Success!', 'Billboard successfuly deleted')
+      } catch (error) {
+        toast('Oops', 'Try again')
+        console.log(error)
+      }
+    } else {
+      toast('Oops', 'Try is later')
+    }
+  }
 
   return (
     <>
@@ -136,7 +210,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
           <Dropzone />
           <Button
             aria-label="Save changes"
-            disabled={loading || !isUploaded || label.length < 3}
+            disabled={loading || creatingOrUpdatingBillboardValidation}
             type="submit"
           >
             {action}

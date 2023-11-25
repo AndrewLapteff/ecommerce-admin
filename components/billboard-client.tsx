@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button'
 import { PlusCircle } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { useParams, useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
+import { BillboardColumn, columns } from './columns'
+import { DataTable } from './ui/data-table'
 
-const BillboardClient = () => {
+const BillboardClient = ({ billboards }: { billboards: BillboardColumn[] }) => {
   const router = useRouter()
   const params = useParams()
 
@@ -19,7 +20,7 @@ const BillboardClient = () => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title="Billboards (0)"
+          title={`Billboards (${billboards.length})`}
           description="Manage your store's billboards"
         />
         <Button
@@ -32,7 +33,8 @@ const BillboardClient = () => {
           Add New
         </Button>
       </div>
-      <Separator />
+      <Separator className="my-4" />
+      <DataTable columns={columns} data={billboards} />
     </>
   )
 }
