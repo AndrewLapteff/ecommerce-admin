@@ -6,7 +6,7 @@ import { PlusCircle } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { useParams, useRouter } from 'next/navigation'
 import { BillboardColumn, columns } from './columns'
-import { DataTable } from './ui/data-table'
+import { DataTable } from '../../../../../../components/ui/data-table'
 
 const BillboardClient = ({ billboards }: { billboards: BillboardColumn[] }) => {
   const router = useRouter()
@@ -34,7 +34,7 @@ const BillboardClient = ({ billboards }: { billboards: BillboardColumn[] }) => {
         </Button>
       </div>
       <Separator className="my-4" />
-      <DataTable columns={columns} data={billboards} />
+      <DataTable columns={columns} data={billboards} searchKey="label" />
     </>
   )
 }

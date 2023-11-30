@@ -19,6 +19,8 @@ import { getSignedURL } from '@/actions/image.actions'
 import { useToastImproved } from '@/hooks/use-toast'
 import { createBillboard, deleteBillboard, updateBillboard } from '@/actions/billboard.actions'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import APIAlert from '../../../../../../../components/ui/api-alert'
+import { useOrigin } from '@/hooks/use-origin'
 
 interface BillboardFormProps {
   billboardData: Billboard | null
@@ -43,6 +45,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
     : !isUploaded || label.length < 3
   const creatingOrUpdatingChecker = billboardData ? true : file !== null && isUploaded
 
+  const origin = useOrigin()
   const pathname = usePathname()
   const router = useRouter()
   const toast = useToastImproved()
@@ -92,8 +95,8 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
       return
     }
 
-    toast('Success!', toastMessage)
     router.push(`/${params.storeId}/billboards`)
+    toast('Success!', toastMessage)
   }
 
   const createBillboardHandler = async (file: File | null, label: string) => {
@@ -218,6 +221,11 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
         </form>
       </FormProvider>
       <Separator />
+      <APIAlert
+        title="NEXT_PUBLIC_API_BILLBOARD_URL"
+        description={`${origin}${pathname}`}
+        variant="public"
+      />
     </>
   )
 }

@@ -41,7 +41,7 @@ export const updateBillboard = async ({ billboardId, storeId, label, url, pathna
 
   const doesBillboardExist = await prismadb.billboard.findFirst({ where: { id: billboardId, store: { userId: userId } } })
 
-  if (doesBillboardExist) return { error: "This billboard doesn't exist or it's not yours" }
+  if (!doesBillboardExist) return { error: "This billboard doesn't exist or it's not yours" }
 
   const billboard = await prismadb.billboard.updateMany({ where: { id: billboardId, storeId }, data: { imageUrl: url ? url : undefined, label: label ? label : undefined } })
 

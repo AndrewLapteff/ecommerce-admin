@@ -19,19 +19,22 @@ const Dropzone = () => {
   const [imageData, setImageData] = useState<ImageDataType>({ width: 0, height: 0 })
   const { onUpload } = useDropzoneFile()
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const newFile = acceptedFiles[0]
-    if (acceptedFiles.length > 0) {
-      await getImageProperties(newFile, (width, height) => {
-        let ratio = width / height
-        let newWidth = FIXED_HEIGHT * ratio
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      const newFile = acceptedFiles[0]
+      if (acceptedFiles.length > 0) {
+        await getImageProperties(newFile, (width, height) => {
+          let ratio = width / height
+          let newWidth = FIXED_HEIGHT * ratio
 
-        setImageData({ width: newWidth, height: FIXED_HEIGHT })
-      })
-      setFile(acceptedFiles[0])
-      onUpload(acceptedFiles[0])
-    }
-  }, [])
+          setImageData({ width: newWidth, height: FIXED_HEIGHT })
+        })
+        setFile(acceptedFiles[0])
+        onUpload(acceptedFiles[0])
+      }
+    },
+    [onUpload]
+  )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,

@@ -13,13 +13,10 @@ import { useState } from 'react'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { deleteStore, updateStore } from '@/actions/store.actions'
-import { useToast } from '@/components/ui/use-toast'
 import { usePathname, useRouter } from 'next/navigation'
-// const AlertModal = dynamic(() => import('@/components/models/alert-modal'))
 import AlertModal from '@/components/models/alert-modal'
 import APIAlert from '@/components/ui/api-alert'
 import { useOrigin } from '@/hooks/use-origin'
-import prismadb from '@/lib/prismadb'
 import { useToastImproved } from '@/hooks/use-toast'
 
 interface SettingsFormProps {

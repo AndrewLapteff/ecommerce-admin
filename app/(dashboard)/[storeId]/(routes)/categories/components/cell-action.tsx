@@ -1,28 +1,27 @@
 'use client'
 
 import { Copy, Edit, MoreHorizontalIcon, Trash } from 'lucide-react'
-import { BillboardColumn } from '../columns'
-import { Button } from './button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from './dropdown-menu'
-import { useToast } from './use-toast'
 import { usePathname, useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation'
-import { deleteBillboard } from '@/actions/billboard.actions'
 import { useToastImproved } from '@/hooks/use-toast'
-import AlertModal from '../models/alert-modal'
 import { useState } from 'react'
+import AlertModal from '@/components/models/alert-modal'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
+import { CategoryColumn } from './columns'
+import { deleteCategory } from '@/actions/category.actions'
 
 interface CellActionProps {
-  data: BillboardColumn
+  data: CategoryColumn
 }
 
-const CellAction = ({ data }: CellActionProps) => {
+const CellActionCategory = ({ data }: CellActionProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -39,11 +38,11 @@ const CellAction = ({ data }: CellActionProps) => {
   const onDelete = async () => {
     if (data.id) {
       try {
-        await deleteBillboard(data.id, params.storeId, pathname)
-        router.push(`/${params.storeId}/billboards`)
-        toast('Success!', 'Billboard successfuly deleted')
+        await deleteCategory({ categoryId: data.id, storeId: params.storeId, pathname })
+        router.push(`/${params.storeId}/categories`)
+        toast('Success!', 'Category successfuly deleted')
       } catch (error) {
-        toast('Oops', 'Try again')
+        toast('Oops', 'Try it again')
         console.log(error)
       }
     } else {
@@ -71,7 +70,7 @@ const CellAction = ({ data }: CellActionProps) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel className="select-none">Actions</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => router.push(`/${params.storeId}/billboards/${data.id}`)}
+            onClick={() => router.push(`/${params.storeId}/categories/${data.id}`)}
             className="cursor-pointer"
           >
             <Edit className="mr-2 h-4 w-4" />
@@ -91,4 +90,4 @@ const CellAction = ({ data }: CellActionProps) => {
   )
 }
 
-export default CellAction
+export default CellActionCategory
