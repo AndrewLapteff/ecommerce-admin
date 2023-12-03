@@ -6,6 +6,7 @@ import { ModalProvider } from '@/providers/model.provider'
 import { Toaster } from '@/components/ui/toaster'
 
 import '@/app/globals.css'
+import { ThemeProvider } from '@/providers/theme-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,7 +20,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={inter.className}>
         <ModalProvider />
-        <ClerkProvider>{children}</ClerkProvider>
+        <ClerkProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </ClerkProvider>
         <Toaster />
       </body>
     </html>

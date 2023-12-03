@@ -14,14 +14,15 @@ interface ImageDataType {
   width: number
 }
 
-const Dropzone = () => {
-  const [file, setFile] = useState<File>()
+const Dropzone = ({ isUrl }: { isUrl: boolean }) => {
+  const [file, setFile] = useState<File | null>()
   const [imageData, setImageData] = useState<ImageDataType>({ width: 0, height: 0 })
   const { onUpload } = useDropzoneFile()
 
   useEffect(() => {
     onUpload(null, false)
-  }, [])
+    setFile(null)
+  }, [isUrl, onUpload])
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -43,18 +44,21 @@ const Dropzone = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { 'image/*': [] },
+    disabled: !isUrl,
     maxSize: MAX_SIZE,
   })
 
   return (
-    <div {...getRootProps({ className: 'max-w-xl' })}>
+    <div {...getRootProps({ className: 'w-2/6 h-48' })}>
       <label
-        className={`flex justify-center w-full h-[128px] px-4 transition bg-background border-2 ${
+        className={`flex justify-center w-full h-full px-4 transition ${
+          isUrl ? 'border-gray-600' : 'border-gray-300'
+        } bg-background border-2 ${
           isDragActive ? 'border-gray-400' : 'border-gray-300'
         } border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none`}
       >
         {file && (
-          <div className="flex items-center space-x-2 ">
+          <div className="flex items-center space-x-2">
             <Image
               alt="image"
               src={URL.createObjectURL(file)}
@@ -67,7 +71,7 @@ const Dropzone = () => {
           <span className="flex items-center space-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 bg-textforeground"
+              className={`w-6 h-6 ${isUrl ? 'text-gray-500' : 'text-gray-300'}`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -80,9 +84,13 @@ const Dropzone = () => {
               />
             </svg>
             {isDragActive ? (
-              <span className="text-foreground font-medium">Right here</span>
+              <span className={`${isUrl ? 'bg-gray-500' : 'text-foreground'} font-medium`}>
+                Right here
+              </span>
             ) : (
-              <span className="text-foreground font-medium">Drop files to Attach</span>
+              <span className={`${isUrl ? 'text-gray-500' : 'text-gray-300'} font-medium`}>
+                Drop files to Attach
+              </span>
             )}
           </span>
         )}

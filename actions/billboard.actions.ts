@@ -10,7 +10,7 @@ export const createBillboard = async (url: string, label: string, storeId: strin
   const { userId } = auth()
 
   if (!userId) return { error: 'Unauthenticated' }
-  if (!url || label) { error: 'Fill in the all fields' }
+  if (!url || !label) { error: 'Fill in the all fields' }
   if (typeof storeId == 'object') storeId = storeId[ 0 ]
 
   const doesBillboardExist = await prismadb.billboard.findFirst({ where: { label } })

@@ -26,6 +26,11 @@ const NavbarRoutes = ({ className }: HTMLAttributes<HTMLElement>) => {
       active: pathname.includes('categories'),
     },
     {
+      href: `/${params.storeId}/products`,
+      label: 'Products',
+      active: pathname.includes('products'),
+    },
+    {
       href: `/${params.storeId}/settings`,
       label: 'Settings',
       active: pathname === `/${params.storeId}/settings`,
@@ -33,7 +38,7 @@ const NavbarRoutes = ({ className }: HTMLAttributes<HTMLElement>) => {
   ]
 
   return (
-    <ul className={cn('flex items-center space-x-4 lg:space-x-6 mx-6', className)}>
+    <ul className={cn('flex items-center space-x-4 lg:space-x-6 mx-2', className)}>
       {routes.map((link) => {
         return (
           <li key={link.href}>

@@ -5,6 +5,7 @@ const CategoryNewPage = async ({ params }: { params: { categoryId: string; store
   const category = await prismadb.category.findFirst({
     where: { id: params.categoryId },
   })
+
   const billboards = await prismadb.billboard.findMany({
     where: { storeId: params.storeId },
   })
