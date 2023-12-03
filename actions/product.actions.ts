@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs"
 import { s3 } from '@/lib/s3'
 import { DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { revalidatePath } from "next/cache"
+import { Decimal } from "@prisma/client/runtime/library"
 
 interface CreateProductProps {
   imageUrl: string,
@@ -13,9 +14,11 @@ interface CreateProductProps {
   pathname: string
   price: number
   categoryId: string | string[],
+  isArchived: boolean | undefined,
+  isFeatured: boolean | undefined
 }
 
-export const createProduct = async ({ imageUrl, name, pathname, price, categoryId, storeId }: CreateProductProps) => {
+export const createProduct = async ({ imageUrl, name, pathname, price, categoryId, storeId, isArchived, isFeatured }: CreateProductProps) => {
   const { userId } = auth()
 
   if (!userId) return { error: 'Unauthenticated' }
@@ -23,7 +26,7 @@ export const createProduct = async ({ imageUrl, name, pathname, price, categoryI
   if (typeof storeId == 'object') storeId = storeId[ 0 ]
   if (typeof categoryId == 'object') categoryId = categoryId[ 0 ]
 
-  const product = await prismadb.product.create({ data: { image: imageUrl, name, price, categoryId, storeId } })
+  const product = await prismadb.product.create({ data: { image: imageUrl, name, price, categoryId, storeId, isArchived, isFeatured } })
 
   revalidatePath(pathname)
 
@@ -32,18 +35,21 @@ export const createProduct = async ({ imageUrl, name, pathname, price, categoryI
 
 interface UpdateProductProps {
   productId: string,
-  imageUrl: string | null
-  name: string | null,
-  price: number | null
+  imageUrl: string | undefined
+  name: string | undefined,
+  price: number | undefined
   pathname: string
-  categoryId: string | null,
+  categoryId: string | undefined,
+  isArchived: boolean | undefined
+  isFeatured: boolean | undefined
 }
 
-export const updateProduct = async ({ productId, imageUrl, name, price, pathname, categoryId }: UpdateProductProps) => {
+export const updateProduct = async ({ productId, imageUrl, name, price, pathname, categoryId, isArchived, isFeatured }: UpdateProductProps) => {
   const { userId } = auth()
-
+  let decimalPrice = undefined
   if (!userId) return { error: 'Unauthenticated' }
-  if (!productId || !imageUrl || !name || !price) { error: 'Fill in the all fields' }
+  if (price)
+    decimalPrice = new Decimal(price)
 
   const doesProductExist = await prismadb.product.findFirst({ where: { id: productId, store: { userId: userId } } })
 
@@ -54,8 +60,10 @@ export const updateProduct = async ({ productId, imageUrl, name, price, pathname
     data: {
       image: imageUrl ? imageUrl : undefined,
       name: name ? name : undefined,
-      price: price ? price : undefined,
-      categoryId: categoryId ? categoryId : undefined
+      price: decimalPrice,
+      categoryId: categoryId ? categoryId : undefined,
+      isArchived,
+      isFeatured
     }
   })
 

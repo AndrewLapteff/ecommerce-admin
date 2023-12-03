@@ -1,37 +1,21 @@
-import type { Metadata } from 'next'
-
-import { Inter } from 'next/font/google'
-import { ClerkProvider } from '@clerk/nextjs'
-import { ModalProvider } from '@/providers/model.provider'
-import { Toaster } from '@/components/ui/toaster'
-
+import { Urbanist } from 'next/font/google'
+import { ReactNode } from 'react'
 import '@/app/globals.css'
-import { ThemeProvider } from '@/providers/theme-provider'
 
-const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'Admin Dashboard',
-  description: 'Admin Dashboard',
+export const metadata = {
+  title: 'Free Courses',
+  description: 'Free courses for everyone.',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // const { userId } = auth()
+  // if (!userId) redirect('/sign-in')
+  // const store = await prismadb.store.findFirst({ where: { userId } })
+  // if (store) redirect(`/dashboard/${store.id}`)
+
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <ModalProvider />
-        <ClerkProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </ClerkProvider>
-        <Toaster />
-      </body>
+    <html>
+      <body>{children}</body>
     </html>
   )
 }

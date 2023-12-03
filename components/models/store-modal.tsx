@@ -51,7 +51,7 @@ export const StoreModal = () => {
     if ('error' in data) {
       toast('Oops!', data?.error)
     } else {
-      window.location.assign(`/${data.id}`)
+      window.location.assign(`/dashboard/${data.id}`)
     }
   }
 

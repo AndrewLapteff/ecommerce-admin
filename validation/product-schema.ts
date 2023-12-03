@@ -7,4 +7,6 @@ export const productSchema = z.object({
   price: z.coerce.number().min(0.01).max(100000),
   categoryId: z.string().uuid(),
   url: z.string().url().optional(),
+  isFeatured: z.boolean().optional(),
+  isArchived: z.boolean().optional(),
 })

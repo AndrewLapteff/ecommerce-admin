@@ -5,11 +5,11 @@ import { useEffect } from 'react'
 
 // components which triggers the modal
 export default function Home() {
-  const { isOpen, onOpen, onClose } = useStoreModal()
+  // const { isOpen, onOpen, onClose } = useStoreModal()
 
-  useEffect(() => {
-    if (!isOpen) onOpen()
-  }, [isOpen, onOpen])
+  // useEffect(() => {
+  //   if (!isOpen) onOpen()
+  // }, [isOpen, onOpen])
 
-  return null
+  return <div>Hello</div>
 }

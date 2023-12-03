@@ -29,3 +29,6 @@ export const getImageProperties = async (file: File, callback: (width: number, h
   reader.readAsDataURL(file)
 }
 
+export const priceFormater = (price: number) => {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
+}

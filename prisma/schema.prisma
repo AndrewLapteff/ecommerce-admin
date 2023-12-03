@@ -17,6 +17,7 @@ model Store {
   billboard Billboard[] @relation("StoreToBillboard")
   category  Category[]  @relation("StoreToCategory")
   products  Product[]   @relation("storeToProduct")
+  orders    Order[]     @relation("storeToOrder")
   userId    String
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -51,19 +52,45 @@ model Category {
 }
 
 model Product {
-  id         String   @id @default(uuid())
+  id         String      @id @default(uuid())
   name       String
   price      Decimal
   image      String
-  isFeatured Boolean  @default(false)
-  isArchived Boolean  @default(false)
+  isFeatured Boolean     @default(false)
+  isArchived Boolean     @default(false)
   storeId    String
-  store      Store    @relation("storeToProduct", fields: [storeId], references: [id])
+  store      Store       @relation("storeToProduct", fields: [storeId], references: [id])
   categoryId String
-  category   Category @relation("categoryToProduct", fields: [categoryId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  category   Category    @relation("categoryToProduct", fields: [categoryId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  orderItems OrderItem[] @relation("orderToProduct")
 
   @@index([storeId])
   @@index([categoryId])
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  storeId   String
+  store     Store       @relation("storeToOrder", fields: [storeId], references: [id])
+  orderItem OrderItem[] @relation("orderItemToOrder")
+  isPaid    Boolean     @default(false)
+  phone     String      @default("")
+  address   String      @default("")
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([storeId])
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation("orderItemToOrder", fields: [orderId], references: [id])
+  productId String
+  product   Product @relation("orderToProduct", fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
 }
