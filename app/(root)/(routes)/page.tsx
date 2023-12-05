@@ -1,15 +1,21 @@
-'use client'
+import BillboardPage from '@/components/store/billboard'
+import Container from '@/components/ui/container'
+import prismadb from '@/lib/prismadb'
 
-import { useStoreModal } from '@/hooks/use-store-modal'
-import { useEffect } from 'react'
-
-// components which triggers the modal
-export default function Home() {
+export default async function Home() {
   // const { isOpen, onOpen, onClose } = useStoreModal()
 
   // useEffect(() => {
   //   if (!isOpen) onOpen()
   // }, [isOpen, onOpen])
 
-  return <div>Hello</div>
+  const billboard = await prismadb.billboard.findFirst({ skip: 2 })
+
+  return (
+    <Container>
+      <div className="space-y-10 pb-10">
+        <BillboardPage billboard={billboard!} />
+      </div>
+    </Container>
+  )
 }

@@ -95,7 +95,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
       return
     }
 
-    router.push(`/${params.storeId}/billboards`)
+    router.push(`/dashboard/${params.storeId}/billboards`)
     toast('Success!', toastMessage)
   }
 
@@ -128,7 +128,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
       return
     }
 
-    router.push(`/${params.storeId}/billboards`)
+    router.push(`/dashboard/${params.storeId}/billboards`)
     toast('Success!', toastMessage)
   }
 
@@ -153,7 +153,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
     if (billboardData?.id) {
       try {
         await deleteBillboard(billboardData.id, params.storeId, pathname)
-        router.push(`/${params.storeId}/billboards`)
+        router.push(`/dashboard/${params.storeId}/billboards`)
         toast('Success!', 'Billboard successfuly deleted')
       } catch (error) {
         toast('Oops', 'Try again')

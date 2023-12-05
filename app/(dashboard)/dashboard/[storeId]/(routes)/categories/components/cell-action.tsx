@@ -39,7 +39,7 @@ const CellActionCategory = ({ data }: CellActionProps) => {
     if (data.id) {
       try {
         await deleteCategory({ categoryId: data.id, storeId: params.storeId, pathname })
-        router.push(`/${params.storeId}/categories`)
+        router.push(`/dashboard/${params.storeId}/categories`)
         toast('Success!', 'Category successfuly deleted')
       } catch (error) {
         toast('Oops', 'Try it again')
@@ -70,7 +70,7 @@ const CellActionCategory = ({ data }: CellActionProps) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel className="select-none">Actions</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => router.push(`/${params.storeId}/categories/${data.id}`)}
+            onClick={() => router.push(`/dashboard/${params.storeId}/categories/${data.id}`)}
             className="cursor-pointer"
           >
             <Edit className="mr-2 h-4 w-4" />

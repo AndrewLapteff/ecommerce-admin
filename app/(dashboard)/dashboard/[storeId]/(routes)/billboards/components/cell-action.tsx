@@ -40,7 +40,7 @@ const CellAction = ({ data }: CellActionProps) => {
     if (data.id) {
       try {
         await deleteBillboard(data.id, params.storeId, pathname)
-        router.push(`/${params.storeId}/billboards`)
+        router.push(`/dashboard/${params.storeId}/billboards`)
         toast('Success!', 'Billboard successfuly deleted')
       } catch (error) {
         toast('Oops', 'Try again')
@@ -71,7 +71,7 @@ const CellAction = ({ data }: CellActionProps) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel className="select-none">Actions</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => router.push(`/${params.storeId}/billboards/${data.id}`)}
+            onClick={() => router.push(`/dashboard/${params.storeId}/billboards/${data.id}`)}
             className="cursor-pointer"
           >
             <Edit className="mr-2 h-4 w-4" />

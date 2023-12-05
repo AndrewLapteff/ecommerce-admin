@@ -80,7 +80,7 @@ const CategoryForm = ({ categoryData, billboards }: CategoryFormProps) => {
       return
     }
 
-    router.push(`/${params.storeId}/categories`)
+    router.push(`/dashboard/${params.storeId}/categories`)
     toast('Success!', toastMessage)
   }
 
@@ -112,7 +112,7 @@ const CategoryForm = ({ categoryData, billboards }: CategoryFormProps) => {
       return
     }
 
-    router.push(`/${params.storeId}/categories`)
+    router.push(`/dashboard/${params.storeId}/categories`)
     toast('Success!', toastMessage)
   }
 
@@ -136,7 +136,7 @@ const CategoryForm = ({ categoryData, billboards }: CategoryFormProps) => {
     if (categoryData?.id) {
       try {
         await deleteCategory({ categoryId: categoryData.id, storeId: params.storeId, pathname })
-        router.push(`/${params.storeId}/categories`)
+        router.push(`/dashboard/${params.storeId}/categories`)
         toast('Success!', 'Category successfuly deleted')
       } catch (error) {
         toast('Oops', 'Try it again')

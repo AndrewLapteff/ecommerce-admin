@@ -32,3 +32,7 @@ export const getImageProperties = async (file: File, callback: (width: number, h
 export const priceFormater = (price: number) => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
 }
+
+export const categoryRouteFormater = (categoryName: string) => {
+  return categoryName.toLowerCase().replace(' ', '_').trim()
+}

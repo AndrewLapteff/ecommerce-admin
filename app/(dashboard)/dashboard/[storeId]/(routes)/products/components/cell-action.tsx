@@ -39,7 +39,7 @@ const CellAction = ({ data }: CellActionProps) => {
     if (data.id) {
       try {
         await deleteProduct(data.id, params.storeId, pathname)
-        router.push(`/${params.storeId}/products`)
+        router.push(`/dashboard/${params.storeId}/products`)
         toast('Success!', 'Product successfuly deleted')
       } catch (error) {
         toast('Oops', 'Try again')

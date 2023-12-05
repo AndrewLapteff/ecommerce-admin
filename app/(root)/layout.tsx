@@ -1,9 +1,10 @@
 import Footer from '@/components/store/footer'
 import StoreNavbar from '@/components/store/navbar'
+import Container from '@/components/ui/container'
 import { Urbanist } from 'next/font/google'
 import { ReactNode } from 'react'
 
-const font = Urbanist({ subsets: ['latin'] })
+// const font = Urbanist({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Free Courses',
@@ -18,7 +19,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
   return (
     <html>
-      <body className={font.className}>
+      <body>
         <StoreNavbar />
         {children}
         <Footer />

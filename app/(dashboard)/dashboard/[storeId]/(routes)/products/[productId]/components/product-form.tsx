@@ -121,7 +121,7 @@ const ProductForm = ({ productData, categories }: ProductFormProps) => {
       return
     }
 
-    router.push(`/${params.storeId}/products`)
+    router.push(`/dashboard/${params.storeId}/products`)
     toast('Success!', toastMessage)
   }
 
@@ -166,7 +166,7 @@ const ProductForm = ({ productData, categories }: ProductFormProps) => {
       return
     }
 
-    router.push(`/${params.storeId}/products`)
+    router.push(`/dashboard/${params.storeId}/products`)
     toast('Success!', toastMessage)
   }
 
@@ -189,7 +189,7 @@ const ProductForm = ({ productData, categories }: ProductFormProps) => {
     if (productData?.id) {
       try {
         await deleteProduct(productData.id, params.storeId, pathname)
-        router.push(`/${params.storeId}/products`)
+        router.push(`/dashboard/${params.storeId}/products`)
         toast('Success!', 'Product successfuly deleted')
       } catch (error) {
         toast('Oops', 'Try again')
