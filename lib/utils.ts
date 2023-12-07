@@ -1,3 +1,4 @@
+import { Product } from "@prisma/client"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -33,6 +34,33 @@ export const priceFormater = (price: number) => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
 }
 
-export const categoryRouteFormater = (categoryName: string) => {
-  return categoryName.toLowerCase().replace(' ', '_').trim()
+export const slugifyCategoryName = (categoryName: string) => {
+  return categoryName.replace(' ', '_').trim()
+}
+
+export const unslugifyCategoryName = (input: string) => {
+  return input.replace('_', ' ').trim()
+}
+
+export const detectLang = (character: string) => {
+  const cyrillicRegex = /[а-яА-Я]/
+  const latinRegex = /[a-zA-Z]/
+
+  if (cyrillicRegex.test(character)) {
+    return 'Russian'
+  } else if (latinRegex.test(character)) {
+    return 'English'
+  } else {
+    return 'Unknown'
+  }
+}
+
+export const findProductsToSuggest = (inputText: string, products: Product[]): Product[] => {
+  const words = inputText.match(/\b\w+\b/g) || []
+  const longWords = words.filter((слово) => слово.length >= 4)
+  const lowerCaseWords = longWords.map((слово) => слово.toLowerCase())
+
+  return products.filter((element) =>
+    lowerCaseWords.some((слово) => element.name.toLowerCase().includes(слово))
+  )
 }

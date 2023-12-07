@@ -367,11 +367,7 @@ const ProductForm = ({ productData, categories }: ProductFormProps) => {
             <Dropzone isUrl={isUploadImage} />
           </div>
 
-          <Button
-            aria-label="Save changes"
-            disabled={loading || !isDirty || !isValid}
-            type="submit"
-          >
+          <Button aria-label="Save changes" disabled={loading} type="submit">
             {action}
           </Button>
         </form>

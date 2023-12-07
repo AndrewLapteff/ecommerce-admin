@@ -18,7 +18,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   // if (store) redirect(`/dashboard/${store.id}`)
 
   return (
-    <html>
+    <html lang="en">
       <body>
         <StoreNavbar />
         {children}

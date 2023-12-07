@@ -1,5 +1,5 @@
 import BillboardPage from '@/components/store/billboard'
-import Container from '@/components/ui/container'
+import ProductList from '@/components/store/product-list'
 import prismadb from '@/lib/prismadb'
 
 export default async function Home() {
@@ -9,13 +9,17 @@ export default async function Home() {
   //   if (!isOpen) onOpen()
   // }, [isOpen, onOpen])
 
+  const products = await prismadb.product.findMany()
   const billboard = await prismadb.billboard.findFirst({ skip: 2 })
 
   return (
-    <Container>
-      <div className="space-y-10 pb-10">
+    <main className="mx-auto max-w-7xl">
+      <section className="space-y-10 pb-10">
         <BillboardPage billboard={billboard!} />
-      </div>
-    </Container>
+      </section>
+      <section className="flex flex-col gap-y-8 px-4 sm:px-6 lg:px-8">
+        <ProductList products={products} title="POPULAR PRODUCTS" />
+      </section>
+    </main>
   )
 }

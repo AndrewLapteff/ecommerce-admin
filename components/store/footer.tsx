@@ -6,6 +6,9 @@ const Footer = () => {
           &copy; 2023 FreeCourses, Inc. All right reserved.
         </p>
       </div>
+      <ul>
+        <li></li>
+      </ul>
     </footer>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { categoryRouteFormater, cn } from '@/lib/utils'
+import { slugifyCategoryName, cn } from '@/lib/utils'
 import { Category } from '@prisma/client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -13,7 +13,7 @@ const MainNav = ({ data }: MainNavProps) => {
   const pathname = usePathname()
   const routes = data.map((route) => {
     return {
-      href: `/${categoryRouteFormater(route.name)}`,
+      href: `/category/${slugifyCategoryName(route.name)}`,
       label: route.name,
       active: pathname === `/category/${route.id}`,
     }
