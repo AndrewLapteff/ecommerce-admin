@@ -11,11 +11,6 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     orderBy: { createdAt: 'desc' },
   })
 
-  products.forEach((product) => {
-    // @ts-ignore
-    product.price = product.price.toNumber()
-  })
-
   const formatedProducts: ProductColumn[] = products.map((product) => {
     return {
       id: product.id,

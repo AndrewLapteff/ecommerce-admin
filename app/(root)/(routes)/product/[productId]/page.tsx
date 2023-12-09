@@ -1,14 +1,15 @@
 import prismadb from '@/lib/prismadb'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
-import Link from 'next/link'
-import { detectLang, slugifyCategoryName } from '@/lib/utils'
+import { detectLang } from '@/lib/utils'
 import Rating from '@/components/store/rating'
 import { Globe } from 'lucide-react'
 import dynamic from 'next/dynamic'
 
 const Suggestions = dynamic(() => import('../../../../../components/store/suggestions'), {
-  loading: () => <p className="mt-16 text-xl font-semibold text-center">Loading...</p>,
+  loading: () => (
+    <p className="mt-16 text-xl font-semibold text-center animate-pulse">Loading...</p>
+  ),
 })
 
 interface ProductParams {
@@ -22,6 +23,9 @@ const ProductPage = async ({ params }: ProductParams) => {
     where: { id: params.productId },
     include: { category: true },
   })
+
+  // @ts-ignore
+  delete product.price
 
   if (!product) return redirect('/')
 
@@ -77,8 +81,9 @@ const ProductPage = async ({ params }: ProductParams) => {
             fill
             alt={product.name}
             sizes="(min-width: 1360px) 262px, (min-width: 1040px) 20vw, (min-width: 780px) calc(33.33vw - 58px), (min-width: 640px) calc(50vw - 66px), calc(100vw - 74px)"
-            priority
-            className="aspect-square object-cover rounded-md"
+            // priority
+            loading="lazy"
+            className="aspect-square object-cover rounded-md animate-fade-in"
           />
         </div>
       </div>

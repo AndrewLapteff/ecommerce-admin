@@ -1,6 +1,6 @@
 'use client'
 
-import { slugifyCategoryName, cn } from '@/lib/utils'
+import { slugifyCategoryName, cn, unslugifyCategoryName } from '@/lib/utils'
 import { Category } from '@prisma/client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -15,11 +15,11 @@ const MainNav = ({ data }: MainNavProps) => {
     return {
       href: `/category/${slugifyCategoryName(route.name)}`,
       label: route.name,
-      active: pathname === `/category/${route.id}`,
+      active: pathname === `/category/${slugifyCategoryName(route.name)}`,
     }
   })
   return (
-    <ul className="mx-6 flex items-center space-x-4 lg:space-x-6">
+    <ul className="mx-6 items-center space-x-4 hidden md:flex lg:flex xl:flex lg:space-x-6">
       {routes.map((route) => {
         return (
           <li key={route.label}>

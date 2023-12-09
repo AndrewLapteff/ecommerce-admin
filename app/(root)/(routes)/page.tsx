@@ -3,14 +3,13 @@ import ProductList from '@/components/store/product-list'
 import prismadb from '@/lib/prismadb'
 
 export default async function Home() {
-  // const { isOpen, onOpen, onClose } = useStoreModal()
-
-  // useEffect(() => {
-  //   if (!isOpen) onOpen()
-  // }, [isOpen, onOpen])
-
   const products = await prismadb.product.findMany()
-  const billboard = await prismadb.billboard.findFirst({ skip: 2 })
+  const billboard = await prismadb.billboard.findFirst({ where: { isActive: true } }) // TODO: selecting functionality
+
+  products.forEach((product) => {
+    // @ts-ignore
+    delete product.price
+  })
 
   return (
     <main className="mx-auto max-w-7xl">

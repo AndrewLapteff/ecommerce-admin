@@ -39,7 +39,7 @@ export const slugifyCategoryName = (categoryName: string) => {
 }
 
 export const unslugifyCategoryName = (input: string) => {
-  return input.replace('_', ' ').trim()
+  return input.replace('_', ' ')
 }
 
 export const detectLang = (character: string) => {

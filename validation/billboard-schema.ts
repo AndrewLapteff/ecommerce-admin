@@ -3,5 +3,6 @@
 import * as z from "zod"
 
 export const billboardSchema = z.object({
-  label: z.string().min(2).max(20),
+  label: z.string().min(2).max(50),
+  isActive: z.boolean(),
 })

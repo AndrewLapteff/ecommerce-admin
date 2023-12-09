@@ -1,15 +1,15 @@
 'use server'
 
 import prismadb from "@/lib/prismadb"
-import { auth } from "@clerk/nextjs"
+import { auth } from '@/lib/auth'
 import { s3 } from '@/lib/s3'
 import { DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { revalidatePath } from "next/cache"
 
-export const createBillboard = async (url: string, label: string, storeId: string | string[], pathname: string) => {
-  const { userId } = auth()
+export const createBillboard = async (url: string, label: string, storeId: string | string[], pathname: string, isActive: boolean) => {
+  const session = await auth()
 
-  if (!userId) return { error: 'Unauthenticated' }
+  if (typeof session?.user === 'undefined') return { error: 'Unauthenticated' }
   if (!url || !label) { error: 'Fill in the all fields' }
   if (typeof storeId == 'object') storeId = storeId[ 0 ]
 
@@ -17,7 +17,7 @@ export const createBillboard = async (url: string, label: string, storeId: strin
 
   if (doesBillboardExist) return { error: 'Unauthorized' }
 
-  const billboard = await prismadb.billboard.create({ data: { imageUrl: url, label, storeId } })
+  const billboard = await prismadb.billboard.create({ data: { imageUrl: url, label, storeId, isActive } })
 
   revalidatePath(pathname)
 
@@ -30,20 +30,21 @@ interface UpdateBillboardProps {
   url?: string | null
   label?: string | null
   pathname: string
+  isActive?: boolean
 }
 
-export const updateBillboard = async ({ billboardId, storeId, label, url, pathname }: UpdateBillboardProps) => {
-  const { userId } = auth()
+export const updateBillboard = async ({ billboardId, storeId, label, url, pathname, isActive }: UpdateBillboardProps) => {
+  const session = await auth()
 
-  if (!userId) return { error: 'Unauthenticated' }
+  if (typeof session?.user === 'undefined') return { error: 'Unauthenticated' }
   if (!billboardId || !storeId) { error: 'Fill in the all fields' }
   if (typeof storeId == 'object') storeId = storeId[ 0 ]
 
-  const doesBillboardExist = await prismadb.billboard.findFirst({ where: { id: billboardId, store: { userId: userId } } })
+  const doesBillboardExist = await prismadb.billboard.findFirst({ where: { id: billboardId, store: { userId: session.user.id } } })
 
   if (!doesBillboardExist) return { error: "This billboard doesn't exist or it's not yours" }
 
-  const billboard = await prismadb.billboard.updateMany({ where: { id: billboardId, storeId }, data: { imageUrl: url ? url : undefined, label: label ? label : undefined } })
+  const billboard = await prismadb.billboard.updateMany({ where: { id: billboardId, storeId }, data: { imageUrl: url ? url : undefined, label: label ? label : undefined, isActive } })
 
   revalidatePath(pathname)
 
@@ -52,13 +53,13 @@ export const updateBillboard = async ({ billboardId, storeId, label, url, pathna
 
 
 export const deleteBillboard = async (billboardId: string, storeId: string | string[], pathname: string) => {
-  const { userId } = auth()
+  const session = await auth()
 
-  if (!userId) return { error: 'Unauthenticated' }
+  if (typeof session?.user === 'undefined') return { error: 'Unauthenticated' }
   if (!billboardId || !storeId) { error: 'Fill in the all fields' }
   if (typeof storeId == 'object') storeId = storeId[ 0 ]
 
-  const doesBillboardExist = await prismadb.billboard.findFirst({ where: { id: billboardId, store: { userId: userId } } })
+  const doesBillboardExist = await prismadb.billboard.findFirst({ where: { id: billboardId, store: { userId: session.user.id } } })
 
   if (!doesBillboardExist) return { error: "This billboard doesn't exist or it's not yours" }
 

@@ -9,7 +9,14 @@ import { useForm, FormProvider } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import AlertModal from '@/components/models/alert-modal'
 import { billboardSchema } from '@/validation/billboard-schema'
@@ -21,6 +28,7 @@ import { createBillboard, deleteBillboard, updateBillboard } from '@/actions/bil
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import APIAlert from '@/components/ui/api-alert'
 import { useOrigin } from '@/hooks/use-origin'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface BillboardFormProps {
   billboardData: Billboard | null
@@ -41,7 +49,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
     : `Billboard "${label}" has been created`
   const action = billboardData ? 'Save Changes' : 'Create'
   const creatingOrUpdatingBillboardValidation = billboardData
-    ? !(label !== billboardData.label || isUploaded)
+    ? false
     : !isUploaded || label.length < 3
   const creatingOrUpdatingChecker = billboardData ? true : file !== null && isUploaded
 
@@ -60,6 +68,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
   const updateBillboardHandler = async (
     file: File | null,
     label: string,
+    isActive: boolean,
     billboardData: Billboard
   ) => {
     setLoading(true)
@@ -88,6 +97,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
       storeId: params.storeId,
       url: sign !== null && sign.url ? sign.url.split('?')[0] : null,
       pathname,
+      isActive,
     })
 
     if (responseFromDB?.error) {
@@ -99,7 +109,7 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
     toast('Success!', toastMessage)
   }
 
-  const createBillboardHandler = async (file: File | null, label: string) => {
+  const createBillboardHandler = async (file: File | null, label: string, isActive: boolean) => {
     setLoading(true)
     if (!file) {
       toast('Oops!', "It seems like you didn't upload a file")
@@ -121,7 +131,13 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
 
     if (!responseFromAWS.ok) throw new Error('Smth went wrong')
 
-    const responseFromDB = await createBillboard(url.split('?')[0], label, params.storeId, pathname)
+    const responseFromDB = await createBillboard(
+      url.split('?')[0],
+      label,
+      params.storeId,
+      pathname,
+      isActive
+    )
 
     if (responseFromDB?.error) {
       toast('Oops', responseFromDB?.error)
@@ -136,9 +152,9 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
     if (creatingOrUpdatingChecker) {
       try {
         if (billboardData) {
-          await updateBillboardHandler(file, data.label, billboardData)
+          await updateBillboardHandler(file, data.label, data.isActive, billboardData)
         } else {
-          await createBillboardHandler(file, data.label)
+          await createBillboardHandler(file, data.label, data.isActive)
         }
       } catch (error) {
         console.error(error)
@@ -209,6 +225,25 @@ const BillboardForm = ({ billboardData }: BillboardFormProps) => {
                 )
               }}
             ></FormField>
+            <FormField
+              disabled={loading}
+              control={form.control}
+              name="isActive"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Active</FormLabel>
+                      <FormDescription>This billboard will appear on the main page</FormDescription>
+                    </div>
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <FormMessage className="absolute" />
+                  </FormItem>
+                )
+              }}
+            />
           </div>
           <Dropzone />
           <Button

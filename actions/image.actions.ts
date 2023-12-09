@@ -2,7 +2,7 @@
 
 import { s3 } from "@/lib/s3"
 import { PutObjectCommand } from "@aws-sdk/client-s3"
-import { auth } from "@clerk/nextjs"
+import { auth } from "@/lib/auth"
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import crypto from 'crypto'
 
@@ -10,15 +10,16 @@ import crypto from 'crypto'
 
 
 export const getSignedURL = async (type: string, size: number) => {
-  const { userId } = auth()
-  if (!userId) return { error: 'Unauthorized' }
+  const session = await auth()
+
+  if (typeof session?.user === 'undefined') return { error: 'Unauthenticated' }
 
   const commad = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME!,
     Key: generateFineName(8),
     ContentType: type,
     ContentLength: size,
-    Metadata: { userId }
+    Metadata: { userId: session.user.id }
   })
 
   const signedURL = await getSignedUrl(s3, commad, {

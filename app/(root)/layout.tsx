@@ -1,10 +1,9 @@
 import Footer from '@/components/store/footer'
 import StoreNavbar from '@/components/store/navbar'
-import Container from '@/components/ui/container'
 import { Urbanist } from 'next/font/google'
 import { ReactNode } from 'react'
 
-// const font = Urbanist({ subsets: ['latin'] })
+const font = Urbanist({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Free Courses',

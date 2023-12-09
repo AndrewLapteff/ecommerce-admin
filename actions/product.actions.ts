@@ -1,7 +1,7 @@
 'use server'
 
 import prismadb from "@/lib/prismadb"
-import { auth } from "@clerk/nextjs"
+import { auth } from "@/lib/auth"
 import { s3 } from '@/lib/s3'
 import { DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { revalidatePath } from "next/cache"
@@ -19,9 +19,9 @@ interface CreateProductProps {
 }
 
 export const createProduct = async ({ imageUrl, name, pathname, price, categoryId, storeId, isArchived, isFeatured }: CreateProductProps) => {
-  const { userId } = auth()
+  const session = await auth()
 
-  if (!userId) return { error: 'Unauthenticated' }
+  if (typeof session?.user === 'undefined') return { error: 'Unauthenticated' }
   if (!imageUrl || !name || !price) { error: 'Fill in the all fields' }
   if (typeof storeId == 'object') storeId = storeId[ 0 ]
   if (typeof categoryId == 'object') categoryId = categoryId[ 0 ]
@@ -45,13 +45,13 @@ interface UpdateProductProps {
 }
 
 export const updateProduct = async ({ productId, imageUrl, name, price, pathname, categoryId, isArchived, isFeatured }: UpdateProductProps) => {
-  const { userId } = auth()
+  const session = await auth()
   let decimalPrice = undefined
-  if (!userId) return { error: 'Unauthenticated' }
+  if (typeof session?.user === 'undefined') return { error: 'Unauthenticated' }
   if (price)
     decimalPrice = new Decimal(price)
 
-  const doesProductExist = await prismadb.product.findFirst({ where: { id: productId, store: { userId: userId } } })
+  const doesProductExist = await prismadb.product.findFirst({ where: { id: productId, store: { userId: session.user.id } } })
 
   if (!doesProductExist) return { error: "This product doesn't exist or it's not yours" }
 
@@ -74,13 +74,13 @@ export const updateProduct = async ({ productId, imageUrl, name, price, pathname
 
 
 export const deleteProduct = async (productId: string, storeId: string | string[], pathname: string) => {
-  const { userId } = auth()
+  const session = await auth()
 
-  if (!userId) return { error: 'Unauthenticated' }
+  if (typeof session?.user === 'undefined') return { error: 'Unauthenticated' }
   if (!productId || !storeId) { error: 'Fill in the all fields' }
   if (typeof storeId == 'object') storeId = storeId[ 0 ]
 
-  const doesProductExist = await prismadb.product.findFirst({ where: { id: productId, store: { userId: userId } } })
+  const doesProductExist = await prismadb.product.findFirst({ where: { id: productId, store: { userId: session.user.id } } })
 
   if (!doesProductExist) return { error: "This product doesn't exist or it's not yours" }
 

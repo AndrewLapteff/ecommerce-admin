@@ -14,6 +14,18 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
+    // add animation of opacity with keyframes
+    animation: {
+      'fade-in': 'fade-in 2s ease-in forwards',
+    },
+    keyframes: {
+      'fade-in': {
+        '0%': { opacity: '0%' },
+        '100%': { opacity: "100%" },
+      },
+    },
+
+
   },
   plugins: [],
 }

@@ -1,4 +1,4 @@
-import { UserButton, auth } from '@clerk/nextjs'
+import { auth } from '@/lib/auth'
 import NavbarRoutes from '@/components/dashboard/navbar-routes'
 import StoreSwitcher from './store-switcher'
 import prismadb from '@/lib/prismadb'
@@ -6,12 +6,13 @@ import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import { ModeToggle } from './mode-toggle'
-const UserButtonLazy = dynamic(() => import('./user-button'))
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 const Navbar = async () => {
-  const { userId } = auth()
-  if (userId === null) redirect('/')
-  const stores = await prismadb.store.findMany({ where: { userId } })
+  const session = await auth()
+  if (typeof session?.user === 'undefined') redirect('/')
+  const stores = await prismadb.store.findMany({ where: { userId: session.user.id } })
 
   return (
     <nav className="border-b">
@@ -22,11 +23,9 @@ const Navbar = async () => {
         <NavbarRoutes />
         <li className="ml-auto flex items-center space-x-4">
           <ModeToggle />
-        </li>
-        <li>
-          <Suspense>
-            <UserButtonLazy />
-          </Suspense>
+          <Link href="/">
+            <Button>Back to store</Button>
+          </Link>
         </li>
       </ul>
     </nav>

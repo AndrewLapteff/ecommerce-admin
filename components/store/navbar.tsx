@@ -2,9 +2,13 @@ import Link from 'next/link'
 import MainNav from '@/components/store/main-nav'
 import prismadb from '@/lib/prismadb'
 import NavbarActions from '@/components/store/navbar-actions'
+import { auth } from '@/lib/auth'
 
 const StoreNavbar = async () => {
   const categories = await prismadb.category.findMany()
+  const session = await auth()
+
+  if (!session) return null
 
   return (
     <nav className="border-b mx-auto max-w-7xl">
@@ -13,7 +17,7 @@ const StoreNavbar = async () => {
           <span className="font-bold text-xl">Store</span>
         </Link>
         <MainNav data={categories} />
-        <NavbarActions />
+        <NavbarActions session={session} />
       </ul>
     </nav>
   )
