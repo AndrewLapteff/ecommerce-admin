@@ -3,11 +3,15 @@
 import { useCart } from '@/hooks/use-cart'
 import Button from './button'
 import { Product } from '@prisma/client'
-import { useEffect, useState } from 'react'
+import useMounted from '@/hooks/use-mounted'
 
-const AddToCardButton = ({ product }: { product: Product }) => {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  product: Product
+}
+
+const AddToCardButton = ({ product, className }: ButtonProps) => {
   const cart = useCart()
-  const [isMounted, setIsMounted] = useState(false)
+  const { isMounted } = useMounted()
   const isItemInCart = cart.items.find((item) => item.id === product.id)
 
   const addItemHandler: React.MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -22,18 +26,12 @@ const AddToCardButton = ({ product }: { product: Product }) => {
     cart.removeItem(product.id)
   }
 
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  if (!isMounted) return <Button className="py-1 px-3 rounded-lg">Loading...</Button>
+  if (!isMounted) return <Button className={className}>Loading...</Button>
 
   return (
-    <Button
-      onClick={isItemInCart ? removeItemHandler : addItemHandler}
-      className="py-1 px-3 rounded-lg"
-    >
-      {isItemInCart ? 'Remove from cart' : 'Add to cart'}
+    <Button onClick={isItemInCart ? removeItemHandler : addItemHandler} className={className}>
+      {isItemInCart && <span className="animate-fade-in">Remove from cart</span>}
+      {!isItemInCart && <span className="animate-fade-in">Add to cart</span>}
     </Button>
   )
 }

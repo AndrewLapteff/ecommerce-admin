@@ -3,7 +3,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import AddToCardButton from '../store/add-to-cart-button'
 
-const ProductCard = ({ product }: { product: Product }) => {
+type ProductCardProps = {
+  product: Product
+}
+
+const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link
       href={`/product/${product.id}`}

@@ -21,7 +21,7 @@ const Dropzone = () => {
 
   useEffect(() => {
     onUpload(null, false)
-  }, [])
+  }, [onUpload])
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {

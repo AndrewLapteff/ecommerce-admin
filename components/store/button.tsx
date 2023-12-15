@@ -9,6 +9,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         onClick={onClick}
         ref={ref}
+        {...props}
         className={cn(
           `w-auto 
           rounded-md 

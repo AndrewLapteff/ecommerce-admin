@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
 import { Progress } from '../ui/progress'
@@ -13,12 +13,7 @@ interface AlertModalParams {
 }
 
 const AlertModal = ({ isOpen, loading, onClose, onConfirm }: AlertModalParams) => {
-  const [isMounted, setIsMounted] = useState(false)
   const [progress, setProgress] = useState(0)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   const progressHandler = () => {
     setProgress(33)

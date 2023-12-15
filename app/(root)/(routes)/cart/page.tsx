@@ -1,16 +1,12 @@
-'use client'
+import { auth } from '@/lib/auth'
+import Cart from './components/cart'
 
-import ProductList from '@/components/store/product-list'
-import Container from '@/components/ui/container'
-import { useCart } from '@/hooks/use-cart'
+const CartPage = async () => {
+  const session = await auth()
+  if (!session) return <div>loading...</div>
+  if (!session.user) return <div>loading...</div>
 
-const Card = () => {
-  const cart = useCart()
-  return (
-    <Container>
-      <ProductList products={cart.items} />
-    </Container>
-  )
+  return <Cart userId={session.user.id} />
 }
 
-export default Card
+export default CartPage

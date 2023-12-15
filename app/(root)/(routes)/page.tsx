@@ -12,9 +12,9 @@ export default async function Home() {
   })
 
   return (
-    <main className="mx-auto max-w-7xl">
+    <main className="mx-auto max-w-7xl main-height">
       <section className="space-y-10 pb-10">
-        <BillboardPage billboard={billboard!} />
+        <BillboardPage label={billboard?.label!} />
       </section>
       <section className="flex flex-col gap-y-8 px-4 sm:px-6 lg:px-8">
         <ProductList products={products} title="POPULAR PRODUCTS" />

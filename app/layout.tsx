@@ -8,11 +8,6 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  // const { userId } = auth()
-  // if (!userId) redirect('/sign-in')
-  // const store = await prismadb.store.findFirst({ where: { userId } })
-  // if (store) redirect(`/dashboard/${store.id}`)
-
   return (
     <html lang="en">
       <body>{children}</body>

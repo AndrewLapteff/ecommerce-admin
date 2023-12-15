@@ -109,7 +109,7 @@ const ProfileClient = ({ user }: { user: User }) => {
               setNewName={setNewName}
             />
           )}
-          {activeTab === 2 && <SubscriptionTab />}
+          {activeTab === 2 && <SubscriptionTab plan={user.plan} />}
         </div>
       </div>
     </Container>

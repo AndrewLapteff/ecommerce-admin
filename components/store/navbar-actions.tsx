@@ -2,19 +2,15 @@
 
 import Button from '@/components/store/button'
 import { useCart } from '@/hooks/use-cart'
+import useMounted from '@/hooks/use-mounted'
 import { ShoppingBag } from 'lucide-react'
 import { Session } from 'next-auth'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 
 const NavbarActions = ({ session }: { session: Session }) => {
-  const [isMounted, setIsMounted] = useState(false)
+  const { isMounted } = useMounted()
   const cart = useCart()
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   const isAuthenticated =
     typeof session?.user?.image === 'string' && session?.user !== undefined && session !== null
@@ -31,7 +27,7 @@ const NavbarActions = ({ session }: { session: Session }) => {
       <Link href="/cart">
         <Button className="flex items-center rounded-full bg-black px-4 py-2">
           <ShoppingBag size={20} color="white" />
-          <span className="ml-2 text-sm font-medium text-white">{cart.items.length}</span>
+          <span className="ml-2 text-sm font-medium text-white w-2">{cart.items.length}</span>
         </Button>
       </Link>
       {isAuthenticated ? (
