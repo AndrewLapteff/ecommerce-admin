@@ -9,7 +9,9 @@ import Button from '@/components/store/button'
 import AddToCardButton from '@/components/store/add-to-cart-button'
 import { CartModal } from '@/components/models/cart-modal'
 import { auth } from '@/lib/auth'
+
 import OrderButton from '@/components/store/order-button'
+import { SessionProvider } from 'next-auth/react'
 
 const Suggestions = dynamic(() => import('../../../../../components/store/suggestions'), {
   loading: () => (
@@ -96,10 +98,12 @@ const ProductPage = async ({ params }: ProductParams) => {
               />
             </div>
             <AddToCardButton product={product} className="w-full h-12"></AddToCardButton>
-            <OrderButton
-              product={product}
-              className="w-full h-12 bg-white text-black outline-2 outline outline-black hover:bg-gray-200"
-            />
+            <SessionProvider session={session}>
+              <OrderButton
+                isAuthorized={typeof session?.user?.id === 'string' ? true : false}
+                className="w-full h-12 bg-white text-black outline-2 outline outline-black hover:bg-gray-200"
+              />
+            </SessionProvider>
           </div>
         </div>
 

@@ -17,6 +17,12 @@ const ProfilePage = async () => {
 
   if (user === null) return redirect('/api/auth/signin')
 
-  return <ProfileClient user={user} />
+  return (
+    <>
+      <ProfileClient user={user}>
+        <span></span>
+      </ProfileClient>
+    </>
+  )
 }
 export default ProfilePage
