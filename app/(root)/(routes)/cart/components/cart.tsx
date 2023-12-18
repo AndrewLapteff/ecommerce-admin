@@ -24,14 +24,17 @@ const Card = ({ userId }: { userId: string }) => {
         {/* <ProductList products={cart.items} /> */}
 
         <section className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-          <ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 order-2 md:order-1 lg:order-1">
-            {cart.items.length === 0 && <NoResults />}
-            {cart.items.map((product) => (
-              <li className="list-none" key={product.name}>
-                <ProductCard key={product.name} product={product} />
-              </li>
-            ))}
-          </ul>
+          {cart.items.length === 0 ? (
+            <NoResults />
+          ) : (
+            <ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 order-2 md:order-1 lg:order-1">
+              {cart.items.map((product) => (
+                <li className="list-none" key={product.name}>
+                  <ProductCard key={product.name} product={product} />
+                </li>
+              ))}
+            </ul>
+          )}
           <div className="w-full flex flex-col items-center order-1 md:order-2: lg:order-2">
             <div className="w-11/12 lg:w-3/6 md:w-3/6 flex flex-col items-start">
               <h1 className="text-4xl font-semibold mt-10 ">CART</h1>

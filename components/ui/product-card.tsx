@@ -20,7 +20,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
             fill={true}
             alt={product.name}
             sizes="(min-width: 1360px) 262px, (min-width: 1040px) 20vw, (min-width: 780px) calc(33.33vw - 58px), (min-width: 640px) calc(50vw - 66px), calc(100vw - 74px)"
-            // priority={false}
+            priority={false}
+            loading="lazy"
             className="aspect-square object-cover rounded-xl animate-fade-in"
           />
         </div>

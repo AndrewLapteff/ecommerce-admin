@@ -10,7 +10,7 @@ type ProductListProps = {
 const ProductList = ({ products, title }: ProductListProps) => {
   return (
     <>
-      <h3 className="font-bold text-2xl">{title}</h3>
+      <h2 className="font-bold text-2xl">{title}</h2>
       {products.length === 0 && <NoResults />}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((product) => (

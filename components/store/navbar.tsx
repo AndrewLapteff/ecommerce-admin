@@ -11,13 +11,13 @@ const StoreNavbar = async () => {
 
   return (
     <nav className="border-b mx-auto max-w-7xl">
-      <ul className="relative px-4 sm:px-6 lg:px-6 flex h-16 items-center">
+      <div className="relative px-4 sm:px-6 lg:px-6 flex h-16 items-center">
         <Link className="ml-4 flex lg:ml-0 gap-x-2" href="/">
           <span className="font-bold text-xl">Store</span>
         </Link>
         <MainNav data={categories} />
         <NavbarActions session={session} />
-      </ul>
+      </div>
     </nav>
   )
 }

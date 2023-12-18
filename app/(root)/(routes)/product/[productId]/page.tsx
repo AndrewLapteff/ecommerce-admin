@@ -5,13 +5,12 @@ import { detectLang } from '@/lib/utils'
 import Rating from '@/components/store/rating'
 import { Globe } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import Button from '@/components/store/button'
 import AddToCardButton from '@/components/store/add-to-cart-button'
 import { CartModal } from '@/components/models/cart-modal'
 import { auth } from '@/lib/auth'
-
 import OrderButton from '@/components/store/order-button'
 import { SessionProvider } from 'next-auth/react'
+import { Metadata } from 'next'
 
 const Suggestions = dynamic(() => import('../../../../../components/store/suggestions'), {
   loading: () => (
@@ -22,6 +21,51 @@ const Suggestions = dynamic(() => import('../../../../../components/store/sugges
 interface ProductParams {
   params: {
     productId: string
+  }
+}
+
+export async function generateMetadata({ params }: ProductParams): Promise<Metadata> {
+  const product = await prismadb.product.findFirst({
+    where: { id: params.productId },
+  })
+  if (!product)
+    return {
+      title: 'Not found',
+      description: 'Product is not found',
+    }
+
+  return {
+    title: product.name,
+    description: product.name,
+    alternates: {
+      canonical: '/',
+    },
+    openGraph: {
+      title: product.name,
+      description: product.name,
+      type: 'website',
+      images: [
+        {
+          url: product.image,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      title: product.name,
+      description: product.name,
+      images: [
+        {
+          url: product.image,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+      site: '@site',
+    },
   }
 }
 

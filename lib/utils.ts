@@ -57,10 +57,10 @@ export const detectLang = (character: string) => {
 
 export const findProductsToSuggest = (inputText: string, products: Product[]): Product[] => {
   const words = inputText.match(/\b\w+\b/g) || []
-  const longWords = words.filter((слово) => слово.length >= 4)
-  const lowerCaseWords = longWords.map((слово) => слово.toLowerCase())
+  const longWords = words.filter((word) => word.length >= 4)
+  const lowerCaseWords = longWords.map((word) => word.toLowerCase())
 
   return products.filter((element) =>
-    lowerCaseWords.some((слово) => element.name.toLowerCase().includes(слово))
+    lowerCaseWords.some((word) => element.name.toLowerCase().includes(word))
   )
 }

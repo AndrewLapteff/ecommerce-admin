@@ -1,5 +1,4 @@
 import Button from '@/components/store/button'
-import { useState } from 'react'
 
 interface ProfileTabProps {
   newEmail: string

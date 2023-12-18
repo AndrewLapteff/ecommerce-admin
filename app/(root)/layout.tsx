@@ -7,8 +7,8 @@ import { ReactNode } from 'react'
 const font = Urbanist({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Free Courses',
-  description: 'Free courses for everyone.',
+  title: 'One Dollar Courses',
+  description: 'One Dollar Courses for everyone',
 }
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
