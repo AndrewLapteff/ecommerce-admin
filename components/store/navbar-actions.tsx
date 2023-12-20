@@ -1,5 +1,6 @@
 'use client'
 
+import { downloadTorrent } from '@/actions/torrent.action'
 import Button from '@/components/store/button'
 import { useCart } from '@/hooks/use-cart'
 import useMounted from '@/hooks/use-mounted'
