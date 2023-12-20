@@ -5,10 +5,7 @@ import { findProductsToSuggest } from '@/lib/utils'
 
 const Suggestions = async ({ product }: { product: Product }) => {
   const products = await prismadb.product.findMany({ where: { NOT: { id: product.id } } })
-  products.forEach((product) => {
-    // @ts-ignore
-    delete product.price
-  })
+
   const suggestions = findProductsToSuggest(product.name, products)
 
   // how to add this animation?

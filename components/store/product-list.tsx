@@ -1,16 +1,18 @@
 import { Product } from '@prisma/client'
 import NoResults from '../ui/no-results'
 import ProductCard from '@/components/ui/product-card'
+import prismadb from '@/lib/prismadb'
 
 type ProductListProps = {
   products: Product[]
   title?: string
 }
 
-const ProductList = ({ products, title }: ProductListProps) => {
+const ProductList = async () => {
+  const products = await prismadb.product.findMany()
+
   return (
     <>
-      <h2 className="font-bold text-2xl">{title}</h2>
       {products.length === 0 && <NoResults />}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((product) => (
