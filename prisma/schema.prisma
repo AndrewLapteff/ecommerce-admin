@@ -55,7 +55,7 @@ model Category {
 model Product {
   id         String      @id @default(uuid())
   name       String
-  price      Decimal
+  price      Int
   image      String
   isFeatured Boolean     @default(false)
   isArchived Boolean     @default(false)

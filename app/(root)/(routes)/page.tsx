@@ -1,23 +1,18 @@
 import BillboardPage from '@/components/store/billboard'
 import ProductList from '@/components/store/product-list'
-import prismadb from '@/lib/prismadb'
+import { Suspense } from 'react'
 
 export default async function Home() {
-  const products = await prismadb.product.findMany()
-  const billboard = await prismadb.billboard.findFirst({ where: { isActive: true } }) // TODO: selecting functionality
-
-  products.forEach((product) => {
-    // @ts-ignore
-    delete product.price
-  })
-
   return (
     <main className="mx-auto max-w-7xl main-height">
       <section className="space-y-10 pb-10">
-        <BillboardPage label={billboard?.label!} />
+        <BillboardPage label="One Course - One Dollar" />
       </section>
       <section className="flex flex-col gap-y-8 px-4 sm:px-6 lg:px-8">
-        <ProductList products={products} title="POPULAR PRODUCTS" />
+        <h2 className="font-bold text-2xl">POPULAR PRODUCTS</h2>
+        <Suspense fallback={null}>
+          <ProductList />
+        </Suspense>
       </section>
     </main>
   )

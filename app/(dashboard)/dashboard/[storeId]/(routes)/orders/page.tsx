@@ -22,9 +22,7 @@ const OrdersPage = async ({ params }: { params: { storeId: string } }) => {
           item.product.name
         })
         .join(', '),
-      totalPrice: priceFormater(
-        order.orderItem.reduce((acc, item) => acc + Number(item.product.price), 0)
-      ),
+      totalPrice: priceFormater(order.orderItem.reduce((acc, item) => acc + item.product.price, 0)),
       createdAt: format(order.createdAt, 'MMMM do, yyyy'),
     }
   })

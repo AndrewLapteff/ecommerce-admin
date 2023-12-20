@@ -7,7 +7,6 @@ const ProductsNewPage = async ({ params }: { params: { storeId: string; productI
   })
 
   // @ts-ignore
-  if (product?.price) product.price = product?.price.toNumber()
 
   const categories = await prismadb.category.findMany({ where: { storeId: params.storeId } })
 

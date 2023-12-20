@@ -1,7 +1,8 @@
 'use server'
 
+import fs from 'fs'
 import { s3 } from "@/lib/s3"
-import { PutObjectCommand } from "@aws-sdk/client-s3"
+import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3"
 import { auth } from "@/lib/auth"
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import crypto from 'crypto'
@@ -39,3 +40,37 @@ export const computeSHA256 = async (file: File) => {
 }
 
 export const generateFineName = (bytes = 8) => crypto.randomBytes(bytes).toString('hex')
+
+export const getObject = async (key: string) => {
+
+  // const command = new GetObjectCommand({
+  //   Bucket: process.env.AWS_BUCKET_NAME!,
+  //   Key: key
+  // })
+  // const { Body } = await s3.send(command)
+  // const res = await Body?.transformToWebStream()
+  // const reader = res?.getReader()
+  // const chunks = []
+  // if (typeof reader === 'undefined') return { error: 'Error' }
+  // while (true) {
+  //   const { done, value } = await reader?.read()
+  //   if (done) break
+  //   chunks.push(value)
+  // }
+  // const blob = new Blob(chunks)
+  // const url = URL.createObjectURL(blob)
+
+  const commad = new PutObjectCommand({
+    Bucket: process.env.AWS_BUCKET_NAME!,
+    Key: generateFineName(8),
+    ContentType: 'torrent',
+    ContentLength: 1000,
+    Metadata: { userId: '123' }
+  })
+
+  const signedURL = await getSignedUrl(s3, commad, {
+    expiresIn: 60
+  })
+
+  console.log(signedURL.split('?')[0])
+}
