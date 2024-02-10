@@ -1,18 +1,13 @@
-import { auth } from '@/lib/auth'
 import NavbarRoutes from '@/components/dashboard/navbar-routes'
 import StoreSwitcher from './store-switcher'
 import prismadb from '@/lib/prismadb'
-import { redirect } from 'next/navigation'
-import { Suspense } from 'react'
-import dynamic from 'next/dynamic'
 import { ModeToggle } from './mode-toggle'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { User } from 'next-auth'
 
-const Navbar = async () => {
-  const session = await auth()
-  if (typeof session?.user === 'undefined') redirect('/')
-  const stores = await prismadb.store.findMany({ where: { userId: session.user.id } })
+const Navbar = async ({ user }: { user: User }) => {
+  const stores = await prismadb.store.findMany({ where: { userId: user.id } })
 
   return (
     <nav className="border-b">

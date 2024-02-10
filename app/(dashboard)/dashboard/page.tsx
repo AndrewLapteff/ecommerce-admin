@@ -2,7 +2,7 @@ import prismadb from '@/lib/prismadb'
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 
-const Dashboard = async ({ children }: { children: React.ReactNode }) => {
+const Dashboard = async () => {
   const session = await auth()
 
   if (session === null) return redirect('/')
@@ -16,7 +16,6 @@ const Dashboard = async ({ children }: { children: React.ReactNode }) => {
   } else {
     redirect('/dashboard/create')
   }
-  return { children }
 }
 
 export default Dashboard

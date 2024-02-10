@@ -4,12 +4,12 @@ import ProductCard from '@/components/ui/product-card'
 import prismadb from '@/lib/prismadb'
 
 type ProductListProps = {
-  products: Product[]
+  products?: Product[]
   title?: string
 }
 
-const ProductList = async () => {
-  const products = await prismadb.product.findMany()
+const ProductList = async ({ products }: ProductListProps) => {
+  if (!products) products = await prismadb.product.findMany()
 
   return (
     <>

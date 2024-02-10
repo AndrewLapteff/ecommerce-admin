@@ -53,19 +53,22 @@ model Category {
 }
 
 model Product {
-  id         String      @id @default(uuid())
-  name       String
-  price      Int
-  image      String
-  isFeatured Boolean     @default(false)
-  isArchived Boolean     @default(false)
-  storeId    String
-  store      Store       @relation("storeToProduct", fields: [storeId], references: [id], onDelete: Cascade)
-  categoryId String
-  category   Category    @relation("categoryToProduct", fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  orderItems OrderItem[] @relation("orderToProduct")
+  id          String      @id @default(uuid())
+  name        String
+  description String      @default("")
+  url         String      @default("")
+  price       Int
+  image       String
+  isFeatured  Boolean     @default(false)
+  isArchived  Boolean     @default(false)
+  storeId     String
+  store       Store       @relation("storeToProduct", fields: [storeId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    Category    @relation("categoryToProduct", fields: [categoryId], references: [id], onDelete: Cascade)
+  purchases   Purchase[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[] @relation("orderToProduct")
 
   @@index([storeId])
   @@index([categoryId])
@@ -134,16 +137,16 @@ model Session {
 }
 
 model User {
-  id               String    @id @default(cuid())
+  id               String     @id @default(cuid())
   name             String?
-  email            String?   @unique
+  email            String?    @unique
   emailVerified    DateTime?
   image            String?
   accounts         Account[]
   sessions         Session[]
-  plan             Plan      @default(FREE)
-  role             Role      @default(USER)
-  stripePurchaseId String?
+  plan             Plan       @default(FREE)
+  role             Role       @default(USER)
+  purchases        Purchase[]
   subscriptionEnds DateTime?
 }
 
@@ -153,4 +156,16 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Purchase {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([productId])
 }

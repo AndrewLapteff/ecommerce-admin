@@ -1,19 +1,17 @@
 import SettingsForm from './components/settings-form'
 import prismadb from '@/lib/prismadb'
-import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { WithAuthProps, withAuth } from '@/hooks/withAuth'
 
-interface SettingsPageParams {
+interface SettingsPageParams extends WithAuthProps {
   params: { storeId: string }
 }
 
-const SettingsPage = async ({ params }: SettingsPageParams) => {
-  const session = await auth()
-  if (typeof session?.user === 'undefined') redirect('/sign-in')
+const SettingsPage = withAuth('/sign-in', async ({ params, user }: SettingsPageParams) => {
   const store = await prismadb.store.findFirst({
     where: {
       id: params.storeId,
-      userId: session.user.id,
+      userId: user.id,
     },
   })
   if (store === null) redirect('/')
@@ -24,6 +22,6 @@ const SettingsPage = async ({ params }: SettingsPageParams) => {
       </div>
     </div>
   )
-}
+})
 
 export default SettingsPage

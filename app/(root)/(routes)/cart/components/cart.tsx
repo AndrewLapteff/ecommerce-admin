@@ -8,7 +8,7 @@ import { useCart } from '@/hooks/use-cart'
 import useMounted from '@/hooks/use-mounted'
 import { useStoreModal } from '@/hooks/use-store-modal'
 
-const Card = ({ userId }: { userId: string }) => {
+const Cart = ({ userId }: { userId: string }) => {
   const cart = useCart()
   const storeModal = useStoreModal()
   const { isMounted } = useMounted()
@@ -16,7 +16,7 @@ const Card = ({ userId }: { userId: string }) => {
   if (!isMounted) {
     return null
   }
-  console.log(cart.items)
+
   return (
     <>
       <CartModal userId={userId} items={cart.items} />
@@ -56,4 +56,4 @@ const Card = ({ userId }: { userId: string }) => {
   )
 }
 
-export default Card
+export default Cart

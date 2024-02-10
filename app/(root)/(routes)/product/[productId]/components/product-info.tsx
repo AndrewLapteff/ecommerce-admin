@@ -10,7 +10,8 @@ import { CartModal } from '@/components/models/cart-modal'
 import { auth } from '@/lib/auth'
 import OrderButton from '@/components/store/order-button'
 import { SessionProvider } from 'next-auth/react'
-import { Metadata } from 'next'
+import { Suspense } from 'react'
+import Button from '@/components/store/button'
 
 const Suggestions = dynamic(() => import('../../../../../../components/store/suggestions'), {
   loading: () => (
@@ -24,7 +25,7 @@ interface ProductParams {
   }
 }
 
-// metadata
+// TODO getStaticParams
 
 const ProductPage = async ({ params }: ProductParams) => {
   const product = await prismadb.product.findFirst({
@@ -33,12 +34,7 @@ const ProductPage = async ({ params }: ProductParams) => {
   })
 
   const session = await auth()
-
-  // @ts-ignore
-
-
   if (!product) return redirect('/')
-
   const lang = detectLang(product?.name[0])
   return (
     <>
@@ -75,9 +71,6 @@ const ProductPage = async ({ params }: ProductParams) => {
                 </ol>
               </nav>
             </div>
-            {/* <Link className="text-blue-600" href={`/${slugifyCategoryName(product.category.name)}`}>
-            {product.category.name}
-          </Link> */}
             <h2 className="font-semibold text-2xl">{product.name}</h2>
             <p>Description</p>
             <Rating string={product.name} />
@@ -98,17 +91,30 @@ const ProductPage = async ({ params }: ProductParams) => {
                 className="aspect-square object-cover rounded-md animate-fade-in"
               />
             </div>
-            <AddToCardButton product={product} className="w-full h-12"></AddToCardButton>
-            <SessionProvider session={session}>
-              <OrderButton
-                isAuthorized={typeof session?.user?.id === 'string' ? true : false}
-                className="w-full h-12 bg-white text-black outline-2 outline outline-black hover:bg-gray-200"
-              />
-            </SessionProvider>
+            {/* 
+            // @ts-ignore */}
+            {session?.user?.role === 'ADMIN' || session?.user?.plan === 'PRO' ? (
+              <Button className="w-full">Download</Button>
+            ) : (
+              <>
+                <AddToCardButton product={product} className="w-full h-12"></AddToCardButton>
+                <SessionProvider session={session}>
+                  <OrderButton
+                    isAuthorized={typeof session?.user?.id === 'string' ? true : false}
+                    className="w-full h-12 bg-white text-black outline-2 outline outline-black hover:bg-gray-200"
+                  />
+                </SessionProvider>
+              </>
+            )}
           </div>
         </div>
-
-        <Suggestions product={product} />
+        <Suspense
+          fallback={
+            <p className="mt-16 text-xl font-semibold text-center animate-pulse">Loading...</p>
+          }
+        >
+          <Suggestions product={product} />
+        </Suspense>
       </section>
     </>
   )

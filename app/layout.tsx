@@ -32,18 +32,18 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang="en">
       <body>{children}</body>
-      <Script
+      {/* <Script
         strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
       />
       <Script id="google-analytics" strategy="afterInteractive">
         {`
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag(){dataLayer.push(arPguments);}
         gtag('js', new Date());
         gtag('config', '${measurementId}');
     `}
-      </Script>
+      </Script> */}
     </html>
   )
 }

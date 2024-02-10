@@ -8,7 +8,6 @@ const Suggestions = async ({ product }: { product: Product }) => {
 
   const suggestions = findProductsToSuggest(product.name, products)
 
-  // how to add this animation?
   return (
     <section className="flex flex-col gap-y-8 px-4 sm:px-6 lg:px-8 transition-all animate-fade-in">
       <ProductList products={suggestions} />

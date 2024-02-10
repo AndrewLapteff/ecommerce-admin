@@ -8,7 +8,6 @@ const StoreNavbar = async () => {
   const categories = await prismadb.category.findMany()
   const session = await auth()
 
-
   return (
     <nav className="border-b mx-auto max-w-7xl">
       <div className="relative px-4 sm:px-6 lg:px-6 flex h-16 items-center">
